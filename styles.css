@@ -1,0 +1,47 @@
+body {
+    background-image: url(img/bgstar.gif);
+
+}
+
+h1 {
+   text-align: center; 
+   color: azure;
+}
+
+h2 {
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: large;
+    text-align: center;
+    color: azure;
+}
+
+.cool {
+    margin:auto;
+    font-family: 'Courier New', Courier, monospace;
+    width: 400px;
+    text-align: center;
+    border: solid blue;
+    color: cyan;
+}
+
+.ads {
+    margin:auto;
+    width: 180px;
+    border: 3px solid white;
+    padding: 5px;
+}
+
+.interactive {
+    margin:auto;
+    border: 3px solid blue;
+}
+
+footer {
+    color: aliceblue;
+    text-align: center;
+}
+
+p {
+    color: white;
+}
+
