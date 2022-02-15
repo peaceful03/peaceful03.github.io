@@ -36,6 +36,12 @@ h2 {
     border: 3px solid blue;
 }
 
+.images {
+    margin:auto;
+    display: flex;
+    justify-content: center;
+}
+
 footer {
     color: aliceblue;
     text-align: center;
@@ -43,5 +49,6 @@ footer {
 
 p {
     color: white;
+    text-align: center;
 }
 
