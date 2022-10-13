@@ -12,16 +12,19 @@
         embedded
         arjs="trackingMethod: best; sourceType: webcam;debugUIEnabled: false;"
 
-        
+
             <!-- we use cors proxy to avoid cross-origin problems ATTENTION! you need to set up your server -->
             <a-nft 
-                type='nft' url="/img/DJI_0136.JPG"
+                type='nft' url="/img/imagetest.png"
                 smooth='true' smoothCount='10' smoothTolerance='0.01' smoothThreshold='5'></a-nft>
                 
                 <a-entity
                 gltf-model='/assets/models/beaconanimate2.gltf'
-                scale="5 5 5"
-                position="150 300 -100"
+                scale="0.025 0.025 0.025"
+                position="0 0 2"
+                rotation="-90 0 0"
+                loop="repeat"
+                animation-mixer
                 > 
             </a-entity>
         </a-marker>
