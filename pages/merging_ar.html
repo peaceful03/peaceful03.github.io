@@ -74,7 +74,10 @@
                 ></a-video>
             </a-marker>
 
-            <b-scene
+            <a-entity camera></a-entity>
+        </a-scene>
+
+        <b-scene
             vr-mode-ui="enabled: false;"
             loading-screen="enabled: false;"
             renderer="logarithmicDepthBuffer: true;"
@@ -112,8 +115,5 @@
 
             <b-entity camera></b-entity>
         </b-scene>
-
-            <a-entity camera></a-entity>
-        </a-scene>
     </body>
 </html>
