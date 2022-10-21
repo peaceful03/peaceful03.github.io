@@ -2,7 +2,13 @@
 <html>
     <link rel="stylesheet" href="iframe.css"
     <body>
+        <button onclick="MyFuction()">open & close</button>
+
+
        <div id="draggable">
+        <div id="close">
+            <button onclick="MyFuction()">close</button>
+        </div>
         <div id="mydivheader">Testing draggable windows</div>
         <iframe src="/index.html" height="500" width="500"></iframe>
        </div>
@@ -52,4 +58,16 @@
             }
             }
        </script>
+
+       <script>
+        function MyFuction() {
+            var x = document.getElementById("draggable");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }  
+        }
+       </script>
+    </body>
 </html>
