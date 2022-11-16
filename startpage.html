@@ -94,6 +94,33 @@
                 49% {opacity: 0;}
                 50% {opacity: 1;}
             }
+
+            form {
+                margin: 1em;
+                position:relative;
+                top:-49px;
+                left:140px
+            }
+
+            form input[type="search"] {
+                background-color: #1d1f21;
+                border: none;
+                color:#68bdbd;
+                box-sizing:border-box;
+                font-weight: bold;
+                font: inherit;
+                width: 80%;
+            }
+
+            form label {
+                color: #1d81b2;
+                left: -1em;
+                position: absolute;
+            }
+
+            form:focus-within input::placeholder {
+                opacity: 0;
+            }
         </style>
     </head>
     <body>
@@ -129,6 +156,18 @@
             </ul>
 
         </nav>
-        <p><span>user@home &gt; </span><span id="cursor">_</span></p>
+        <p><span>user@home &gt; </span>
+            <span>
+                <form action="https://duckduckgo.com/" method="GET">
+                    <input autofocus
+                           name="q"
+                           type="search"
+                           placeholder="search with duckduckgo...">
+                  </form>
+            </span>
+        </p>
+
+
     </body>
+
 </html>
