@@ -18,3 +18,9 @@
     text-align: right;
     background-color:#2196f3;
 }
+
+.button1 {
+    background-color: green;
+    border: none;
+    color: white;
+}
