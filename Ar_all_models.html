@@ -1,0 +1,154 @@
+<!doctype html>
+<html>
+    <head>
+        <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+        <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+        <script src="https://raw.githack.com/AR-js-org/studio-backend/master/src/modules/marker/tools/gesture-detector.js"></script>
+        <script src="https://raw.githack.com/AR-js-org/studio-backend/master/src/modules/marker/tools/gesture-handler.js"></script>
+    </head>
+
+    <body style="margin: 0; overflow: hidden;">
+        <a-scene
+            vr-mode-ui="enabled: false;"
+            loading-screen="enabled: false;"
+            arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
+            id="scene"
+            embedded
+            gesture-detector
+        >
+            <!--Shirehall model-->
+            <a-assets>
+                <a-asset-item
+                    id="shiremodel"
+                    src="/pages/demos/shireinfoassets/shiremodel.glb"
+                ></a-asset-item>
+            </a-assets>   
+
+            <!--Beacon model-->
+            <a-assets>
+                <a-asset-item
+                    id="beaconmodel"
+                    src="/assets/beaconar/asset.gltf"
+                ></a-asset-item>
+            </a-assets>  
+            
+            <!--War Museum model-->
+            <a-assets>
+                <a-asset-item
+                    id="warmusmodel"
+                    src="/assets/voxel-models/warmus.glb"
+                ></a-asset-item>
+            </a-assets>   
+
+            <!--Church model-->
+            <a-assets>
+                <a-asset-item
+                    id="churchmodel"
+                    src="/assets/voxel-models/church.glb"
+                ></a-asset-item>
+            </a-assets>   
+
+            <!--Shirehall model-->
+            <a-marker
+                id="animated-marker"
+                type="pattern"
+                preset="custom"
+                url="/assets/custom-markers/patt/markerB.patt"
+                raycaster="objects: .clickable"
+                emitevents="true"
+                cursor="fuse: false; rayOrigin: mouse;"
+                id="markerA"
+            >
+
+                <a-entity
+                id="bowser-model"
+                scale="0.03 0.03 0.03"
+                animation-mixer="loop: repeat"
+                postion="1 0 0"
+                rotation="0 0 0"
+                gltf-model="#shiremodel"
+                class="clickable"
+                gesture-handler
+            ></a-entity>
+
+            </a-marker>
+            
+            <!--Beacon model-->
+            <a-marker
+            id="animated-marker"
+            type="pattern"
+            preset="custom"
+            url="/assets/custom-markers/patt/markerC.patt"
+            raycaster="objects: .clickable"
+            emitevents="true"
+            cursor="fuse: false; rayOrigin: mouse;"
+            id="markerB"
+        >
+
+            <a-entity
+            id="bowser-model"
+            scale="0.02 0.02 0.02"
+            animation-mixer="loop: repeat"
+            postion="1 0 0"
+            rotation="0 0 0"
+            gltf-model="#beaconmodel"
+            class="clickable"
+            gesture-handler
+        ></a-entity>
+
+        </a-marker>
+
+            <!--War Museum  model-->
+            <a-marker
+            id="animated-marker"
+            type="pattern"
+            preset="custom"
+            url="/assets/custom-markers/patt/markerD.patt"
+            raycaster="objects: .clickable"
+            emitevents="true"
+            cursor="fuse: false; rayOrigin: mouse;"
+            id="markerC"
+        >
+
+            <a-entity
+            id="bowser-model"
+            scale="0.03 0.03 0.03"
+            animation-mixer="loop: repeat"
+            postion="1 0 0"
+            rotation="0 0 0"
+            gltf-model="#warmusmodel"
+            class="clickable"
+            gesture-handler
+        ></a-entity>
+
+        </a-marker>
+
+            <!--Church  model-->
+            <a-marker
+            id="animated-marker"
+            type="pattern"
+            preset="custom"
+            url="/assets/custom-markers/patt/markerA.patt"
+            raycaster="objects: .clickable"
+            emitevents="true"
+            cursor="fuse: false; rayOrigin: mouse;"
+            id="markerC"
+        >
+
+            <a-entity
+            id="bowser-model"
+            scale="0.02 0.02 0.02"
+            animation-mixer="loop: repeat"
+            postion="1 0 0"
+            rotation="0 0 0"
+            gltf-model="#churchmodel"
+            class="clickable"
+            gesture-handler
+        ></a-entity>
+
+        </a-marker>
+
+            <a-entity camera></a-entity>
+        </a-scene>
+    </body>
+</html>
