@@ -24,77 +24,6 @@
                 },
             });
 
-            AFRAME.registerComponent('videohandler', {
-                init: function () {
-                    var marker = this.el;
-                    this.vid = document.querySelector("#vid2"); 
-
-
-                    marker.addEventListener('markerFound', function () {
-                        this.toggle = true;
-                        this.vid.play();
-                    }.bind(this));
-
-                    marker.addEventListener('markerLost', function () {
-                        this.toggle = false;
-                        this.vid.pause();
-                    }.bind(this));
-                },
-            });
-
-            AFRAME.registerComponent('videohandler', {
-                init: function () {
-                    var marker = this.el;
-                    this.vid = document.querySelector("#vid"); 
-
-
-                    marker.addEventListener('markerFound', function () {
-                        this.toggle = true;
-                        this.vid.play();
-                    }.bind(this));
-
-                    marker.addEventListener('markerLost', function () {
-                        this.toggle = false;
-                        this.vid.pause();
-                    }.bind(this));
-                },
-            });
-
-            AFRAME.registerComponent('videohandler', {
-                init: function () {
-                    var marker = this.el;
-                    this.vid = document.querySelector("#vid"); 
-
-
-                    marker.addEventListener('markerFound', function () {
-                        this.toggle = true;
-                        this.vid.play();
-                    }.bind(this));
-
-                    marker.addEventListener('markerLost', function () {
-                        this.toggle = false;
-                        this.vid.pause();
-                    }.bind(this));
-                },
-            });
-
-            AFRAME.registerComponent('videohandler', {
-                init: function () {
-                    var marker = this.el;
-                    this.vid = document.querySelector("#vid"); 
-
-
-                    marker.addEventListener('markerFound', function () {
-                        this.toggle = true;
-                        this.vid.play();
-                    }.bind(this));
-
-                    marker.addEventListener('markerLost', function () {
-                        this.toggle = false;
-                        this.vid.pause();
-                    }.bind(this));
-                },
-            });
         </script>
     </head>
 
@@ -197,7 +126,7 @@
                 id="markerA"
             >
                 <a-video
-                    src="#vid"
+                    src="#vid1"
                     scale="4 4 4"
                     position="-0.1 0.1 2.5"
                     rotation="-90 0 0"
@@ -221,7 +150,7 @@
                 id="markerB"
             >
                 <a-video
-                    src="#vid"
+                    src="#vid2"
                     scale="4 4 4"
                     position="-0.1 0.1 2.5"
                     rotation="-90 0 0"
@@ -245,7 +174,7 @@
                 id="markerC"
             >
                 <a-video
-                    src="#vid"
+                    src="#vid3"
                     scale="4 4 4"
                     position="-0.1 0.1 2.5"
                     rotation="-90 0 0"
@@ -269,7 +198,7 @@
                 id="markerD"
             >
                 <a-video
-                    src="#vid"
+                    src="#vid4"
                     scale="4 4 4"
                     position="-0.1 0.1 2.5"
                     rotation="-90 0 0"
@@ -293,7 +222,7 @@
                 id="markerE"
             >
                 <a-video
-                    src="#vid"
+                    src="#vid5"
                     scale="4 4 4"
                     position="-0.1 0.1 2.5"
                     rotation="-90 0 0"
