@@ -9,11 +9,8 @@
             AFRAME.registerComponent('videohandler', {
                 init: function () {
                     var marker = this.el;
-                    this.vid = document.querySelector("#vid1");
-                    this.vid = document.querySelector("#vid2");
-                    this.vid = document.querySelector("#vid3");
-                    this.vid = document.querySelector("#vid4");
-                    this.vid = document.querySelector("#vid5");
+                    this.vid = document.querySelector("#vid");
+
 
                     marker.addEventListener('markerFound', function () {
                         this.toggle = true;
@@ -40,7 +37,7 @@
         >
             <a-assets>
                 <video
-                    id="vid1"
+                    id="vid"
                     src="assets/videos/fixed/church.mp4"
                     preload="auto"
                     response-type="arraybuffer"
@@ -55,7 +52,7 @@
 
             <a-assets>
                 <video
-                    id="vid2"
+                    id="vid"
                     src="assets/videos/fixed/beacon.mp4"
                     preload="auto"
                     response-type="arraybuffer"
@@ -70,7 +67,7 @@
 
             <a-assets>
                 <video
-                    id="vid3"
+                    id="vid"
                     src="assets/videos/fixed/shire.mp4"
                     preload="auto"
                     response-type="arraybuffer"
@@ -85,7 +82,7 @@
 
             <a-assets>
                 <video
-                    id="vid4"
+                    id="vid"
                     src="assets/videos/fixed/railway.mp4"
                     preload="auto"
                     response-type="arraybuffer"
@@ -100,7 +97,7 @@
 
             <a-assets>
                 <video
-                    id="vid5"
+                    id="vid"
                     src="assets/videos/fixed/warmus.mp4"
                     preload="auto"
                     response-type="arraybuffer"
@@ -128,7 +125,7 @@
                 id="markerA"
             >
                 <a-video
-                    src="#vid1"
+                    src="#vid"
                     scale="4 4 4"
                     position="-0.1 0.1 2.5"
                     rotation="-90 0 0"
@@ -152,7 +149,7 @@
                 id="markerB"
             >
                 <a-video
-                    src="#vid2"
+                    src="#vid"
                     scale="4 4 4"
                     position="-0.1 0.1 2.5"
                     rotation="-90 0 0"
@@ -176,7 +173,7 @@
                 id="markerC"
             >
                 <a-video
-                    src="#vid3"
+                    src="#vid"
                     scale="4 4 4"
                     position="-0.1 0.1 2.5"
                     rotation="-90 0 0"
@@ -200,7 +197,7 @@
                 id="markerD"
             >
                 <a-video
-                    src="#vid4"
+                    src="#vid"
                     scale="4 4 4"
                     position="-0.1 0.1 2.5"
                     rotation="-90 0 0"
@@ -224,7 +221,7 @@
                 id="markerE"
             >
                 <a-video
-                    src="#vid5"
+                    src="#vid"
                     scale="4 4 4"
                     position="-0.1 0.1 2.5"
                     rotation="-90 0 0"
