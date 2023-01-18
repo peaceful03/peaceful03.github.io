@@ -9,7 +9,11 @@
             AFRAME.registerComponent('videohandler', {
                 init: function () {
                     var marker = this.el;
-                    this.vid = document.querySelector("#vid");
+                    this.vid = document.querySelector("#vid1");
+                    this.vid = document.querySelector("#vid2");
+                    this.vid = document.querySelector("#vid3");
+                    this.vid = document.querySelector("#vid4");
+                    this.vid = document.querySelector("#vid5");
 
                     marker.addEventListener('markerFound', function () {
                         this.toggle = true;
