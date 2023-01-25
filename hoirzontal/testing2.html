@@ -1,0 +1,47 @@
+<html>
+    <main>
+        <section>
+          <h1>Beep</h1>
+        </section>
+        <section>
+          <h1>Boop</h1>
+        </section>
+        <section>
+          <h1>Boooom</h1>
+        </section>
+      </main>
+
+      <style>
+        main {
+            overflow-x: hidden; /*or overflow-x:scroll */
+            display: flex;
+            }
+
+            h1 {
+            margin: 0;
+            }
+
+            section {
+            min-width: 50vw;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 4ch;
+            }
+
+            section:nth-child(even) {
+            background-color: teal;
+            color: white;
+            }
+      </style>
+
+      <script>
+        const scrollContainer = document.querySelector("main");
+
+        scrollContainer.addEventListener("wheel", (evt) => {
+            evt.preventDefault();
+            scrollContainer.scrollLeft += evt.deltaY;
+        });
+      </script>
+</html>
