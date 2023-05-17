@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet"> 
+
+
+<html>
+<head>
+	<title>My Website</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta charset="utf-8">
+    <title>Add a default marker to a web map</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+	<style>
+		/* Styles for navigation header */
+		nav {
+			background-color: #131313;
+			color: #fff;
+			padding: 10px;
+			display:flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		nav ul {
+			list-style-type: none;
+			margin: 0;
+			padding: 0;
+			display: flex;
+			align-items: center;
+		}
+
+		nav li {
+			margin-right: 20px;
+			font-size: 18px;
+			font-weight: bold;
+		}
+
+		nav a {
+			color: #fff;
+			text-decoration: none;
+			transition: color 0.3s;
+			font-weight: bold;
+			font-family: 'Montserrat', sans-serif;
+			font-size: 24px;
+		}
+
+		nav a:hover {
+			color: #f1c40f;
+		}
+
+		body {
+			background-color: #000;
+		}
+
+
+        
+
+        body { margin: 0; padding: 0; }
+        #map { position: absolute; top: 85px; bottom: 0; width: 70%; left: 400px;}
+	</style>
+</head>
+<body>
+	<!-- Navigation header -->
+	<nav>
+		<div>
+			<a href="#">Drone Portfolio</a>
+		</div>
+		<ul>
+			<li><a href="/drone_portfolio/main.html">Home</a></li>
+			<li><a href="/drone_portfolio/map.html">Map</a></li>
+			<li><a href="#">Photography</a></li>
+			<li><a href="#">Scans</a></li>
+		</ul>
+	</nav>
+
+	<!-- Rest of website content goes here -->
+
+    <div id="map"></div>
+    
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoicGVhY2VmdWwwMyIsImEiOiJjbDEzajhnNXkwZGdrM2ltdDM4ZGoyeDJ2In0.G9NRdfzKEaCjZN0bnbmMGw';
+    const map = new mapboxgl.Map({
+    container: 'map',
+    // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
+    style: 'mapbox://styles/mapbox/dark-v11',
+    center: [-4.723031, 50.482907],
+    zoom: 12
+    });
+    
+    // Bodmin town popup
+    const bt = new mapboxgl.Popup({ offset: 25 }).setText(
+    '<h3><a>https://google.com</a></h3>'
+    );
+
+    // Wenford dries popup
+    const wd = new mapboxgl.Popup({ offset: 25 }).setText(
+    'Construction on the Washington Monument began in 1848.'
+    );
+
+    // Bodmin college popup
+    const bc = new mapboxgl.Popup({ offset: 25 }).setText(
+    'Bodmin College Model'
+    );
+
+    // woods browning popup
+    const wb = new mapboxgl.Popup({ offset: 25 }).setText(
+    'Construction on the Washington Monument began in 1848.'
+    );
+
+
+
+    // Marker for Bodmin Town
+    const marker1 = new mapboxgl.Marker()
+    .setLngLat([-4.717610, 50.471298])
+    .setPopup(bt)
+    .addTo(map);
+
+    
+    // Marker for Bodmin College
+    const marker2 = new mapboxgl.Marker({ color: 'orange'})
+    .setLngLat([-4.712225, 50.460079])
+    .setPopup(bc)
+    .addTo(map);
+
+    // Marker for Wenford Dries
+    const marker3 = new mapboxgl.Marker({ color: 'green'})
+    .setLngLat([-4.704802, 50.537551])
+    .setPopup(wd)
+    .addTo(map);
+
+    // Marker for Woods Browning
+    const marker4 = new mapboxgl.Marker({ color: 'red'})
+    .setLngLat([-4.708346, 50.458286])
+    .setPopup(wb)
+    .addTo(map);
+    </script>
+
+    <div>
+        <p>testing</p>
+    </div>
+
+
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet"> 
+
+
+<html>
+<head>
+	<title>My Website</title>
+    <meta charset="utf-8">
+    <title>Add a default marker to a web map</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+		/* Styles for navigation header */
+		nav {
+			background-color: #131313;
+			color: #fff;
+			padding: 10px;
+			display:flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		nav ul {
+			list-style-type: none;
+			margin: 0;
+			padding: 0;
+			display: flex;
+			align-items: center;
+		}
+
+		nav li {
+			margin-right: 20px;
+			font-size: 18px;
+			font-weight: bold;
+		}
+
+		nav a {
+			color: #fff;
+			text-decoration: none;
+			transition: color 0.3s;
+			font-weight: bold;
+			font-family: 'Montserrat', sans-serif;
+			font-size: 24px;
+		}
+
+		nav a:hover {
+			color: #f1c40f;
+		}
+
+		body {
+			background-color: #000;
+		}
+
+        .layout {
+        width: 1366px;
+        height: 768px;
+
+        display: grid;
+        grid:
+            "sidebar body" 1fr
+            / auto 1fr;
+        gap: 8px;
+        }
+
+        .sidebar { grid-area: sidebar; 	font-weight: bold;font-family: 'Montserrat', sans-serif; font-size: 24px;}
+        .body { grid-area: body;}
+
+
+        /*side bar styles*/
+
+        a {
+            text-decoration: none;
+            color:white
+        }
+
+        h1 {
+            font-weight: bold;
+			font-family: 'Montserrat', sans-serif;
+			font-size: 24px;
+            color: #fff;
+        }
+
+        p {
+            font-weight: bold;
+			font-family: 'Montserrat', sans-serif;
+			font-size: 16px;
+            color: #fff;
+        }
+
+        .layout {
+            display: flex;
+            gap: 400px;
+        }
+
+        .layout2 {
+            display: flex;
+            gap: 400px;
+        }
+
+        .fpv_pic {
+            position: relative;
+            left: 300px;
+            top: 100px;
+        }
+
+        .fpv_text {
+            position: relative;
+            left: 400px;
+        }
+
+
+        .mini2_text {
+            margin: 100px;
+            text-align: right;
+        }
+
+        .mini2_pic {
+            position: relative;
+            right: 200px;
+        }
+
+	</style>
+</head>
+<body>
+	<!-- Navigation header -->
+	<nav>
+		<div>
+			<a href="#">Drone Portfolio</a>
+		</div>
+		<ul>
+			<li><a href="/drone_portfolio/main.html">Home</a></li>
+			<li><a href="/drone_portfolio/map.html">Map</a></li>
+			<li><a href="#">Photography</a></li>
+			<li><a href="#">Drones</a></li>
+		</ul>
+	</nav>
+
+	<!-- Rest of website content goes here -->
+    <section class="layout">
+        <div class="fpv_pic">
+            <img src="/img/DJI_FPV.png" width>
+        </div>
+        
+        <div class="fpv_text">
+            <h1>DJI FPV</h1>
+            <p>On March 2, 2021, DJI announced the launch of the DJI FPV, an entirely new type of hybrid drone combining the first-person view (FPV) and high-speed performance of racing drones, the cinematic camera and reliability of traditional consumer drones, and an optional innovative motion controller that allows pilots to control the drone with just single-handed movements. Based on DJI's earlier Digital FPV system, the drone features high-performance motors for a maximum air speed of 140 km/h (87 mph) and a 0–100 km acceleration of just 2 seconds under manual mode, an intuitive user interface and the latest safety features for greater flight control. The new FPV system lets pilots see from the drone's perspective in low-latency high-definition video thanks to "O3", the third iteration of DJI's proprietary OcuSync technology. It allows pilots to capture ultra-smooth and stable 4K video at 60 fps with the stabilization of RockSteady electronic image stabilization.</p>
+            <img src="/img/fpv_controller.png">
+            <img src="/img/fpv_goggles.png">
+        </div>
+    </section>
+
+    <section class="layout2">
+        <div class="mini2_text">
+            <h1>DJI Mini 2</h1>
+            <p>DJI Mini 2, released November 2020,[10] improves upon the Mavic Mini with longer flight time (31 minutes) and the ability to record 4K footage. Weighing in at 249g, the Mini 2 can withstand level 5 winds. It has 5 quickshot modes, 3 panorama modes, HD, 2.7k and 4k video. It also has the ability to take raw 12MP photos. The DJI Mini 2 also uses Ocusync 2.0 giving it a max transmission range of 10 km. DJI released the Mini 2 SE on February 9th, 2023. It is basically a Mini 2 with a downgraded camera from 4K to a 2.7K. Everything else is basically similar to a Mini 2.</p>
+            <img src="/img/mini2_controller.png">
+        </div>
+        
+        <div class="mini2_pic">
+            <img src="/img/DJI_MINI.png">
+        </div>
+    </section>
+
+</body>
+</html>

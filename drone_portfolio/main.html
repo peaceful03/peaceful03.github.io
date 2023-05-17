@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet"> 
+
+
+<html>
+<head>
+	<title>My Website</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+		.layout {
+			width: 1366px;
+			height: 768px;
+
+			display: grid;
+			grid:
+				"sidebar body" 1fr
+				/ auto 1fr;
+			gap: 8px;
+			}
+
+			.sidebar { grid-area: sidebar; }
+			.body { grid-area: body; }
+
+			nav {
+			color: #fff;
+			padding: 10px;
+			display:flex;
+			justify-content: space-between;
+			align-items: center;
+			position: absolute;
+			top: 500px;
+			left: 200px;
+		}
+
+
+		nav li {
+			margin-bottom: 30px;
+			font-size: 28px;
+			font-weight: bold;
+		}
+
+		nav a {
+			color: #fff;
+			text-decoration: none;
+			transition: color 0.3s;
+			font-weight: bold;
+			font-family: 'Montserrat', sans-serif;
+			font-size: 24px;
+		}
+
+		nav a:hover {
+			color: #f1c40f;
+		}
+
+		body {
+			background-color: #000;
+			color: #fff;
+			font-weight: bold;
+			font-family: 'Montserrat', sans-serif;
+			font-size: 24px;
+		}
+		
+		img {
+			position: absolute;
+			top: 250px;
+			left: 700px;
+			max-width:900px;
+		}
+
+		iframe {
+			position: absolute;
+			left: 40%;
+			top: 900px;
+		}
+
+	</style>
+</head>
+<body>
+	<section class="layout">
+		<div class="sidebar"><nav>
+			<ul>
+				<li><a href="/drone_portfolio/main.html">Home</a></li>
+				<li><a href="/drone_portfolio/sidebar_testing.html">Map</a></li>
+				<li><a href="/drone_portfolio/drones.html">Drones</a></li>
+			</ul>
+		</nav></div>
+		<div class="body">
+			<img src='/img/home_pic.png'>
+			<div class="drone_showreel">
+				<iframe width="760" height="415" src="https://www.youtube.com/embed/dztzKsHzMKs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+			</div>
+		</div>
+	  </section>
+
+	<!-- Rest of website content goes here -->
+</body>
+</html>
