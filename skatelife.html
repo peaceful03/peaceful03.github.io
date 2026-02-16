@@ -1,0 +1,473 @@
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+
+// --- ICONS (Inline SVGs for stability) ---
+const IconMapPin = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>;
+const IconAward = ({ size = 20 }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/><circle cx="12" cy="8" r="6"/></svg>;
+const IconTimer = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="12" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/></svg>;
+const IconTrendingUp = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>;
+const IconChevronLeft = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>;
+const IconUser = ({ size = 20 }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>;
+const IconHeart = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>;
+const IconMessage = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>;
+const IconPlus = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="16"/><line x1="8" x2="16" y1="12" y2="12"/></svg>;
+const IconCheck = ({ size = 14 }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>;
+const IconCamera = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>;
+
+// --- DATA ---
+const SKATEPARKS = [
+  { 
+    id: 'bodmin-priory', 
+    name: 'Bodmin Priory Park', 
+    lat: 50.4715, 
+    lng: -4.7180, 
+    features: ['Bowl', 'Street Section', 'Jumpbox', 'Hips'], 
+    description: 'A modern concrete facility by Maverick Skateparks, featuring a great mix of transition and street.', 
+    distance: 'Local',
+    imageUrl: 'https://images.unsplash.com/photo-1547447134-cd3f5c716030?auto=format&fit=crop&q=80&w=800'
+  },
+  { 
+    id: 'wadebridge', 
+    name: 'Wadebridge Skatepark', 
+    lat: 50.515, 
+    lng: -4.832, 
+    features: ['Open Bowl', 'Plaza', 'Banks'], 
+    description: 'Spacious concrete park with a fantastic flow and smooth surfaces.', 
+    distance: '7.8 miles',
+    imageUrl: 'https://images.unsplash.com/photo-1520156584141-24bd2398f7bb?auto=format&fit=crop&q=80&w=800'
+  },
+  { 
+    id: 'roche-park', 
+    name: 'Roche Skatepark', 
+    lat: 50.401, 
+    lng: -4.831, 
+    features: ['Mini Ramp', 'Flatbanks', 'Ledges'], 
+    description: 'Compact Maverick build with a nice flow and a very smooth pump track nearby.', 
+    distance: '6.5 miles',
+    imageUrl: 'https://images.unsplash.com/photo-1564982024202-75396c3647a7?auto=format&fit=crop&q=80&w=800' 
+  },
+  { 
+    id: 'liskeard-rampsons', 
+    name: 'Liskeard Rampsons', 
+    lat: 50.455, 
+    lng: -4.464, 
+    features: ['Modular Ramps', 'Driveway', 'Rails'], 
+    description: 'Metal-framed composite park with a good variety of street obstacles.', 
+    distance: '12.4 miles',
+    imageUrl: 'https://images.unsplash.com/photo-1549221195-23f2f0be876b?auto=format&fit=crop&q=80&w=800'
+  }
+];
+
+const MOCK_TRICKS = [
+  { id: 1, user: 'SkateRat_99', trick: 'Tre Flip over the hip', parkId: 'bodmin-priory', time: '2m ago', likes: 12 },
+  { id: 2, user: 'Lottie_O', trick: 'FS Smith Grind on the long ledge', parkId: 'bodmin-priory', time: '15m ago', likes: 24 },
+  { id: 3, user: 'CornwallRipper', trick: 'Kickflip into the bowl', parkId: 'wadebridge', time: '1h ago', likes: 45 },
+  { id: 4, user: 'OllieKing', trick: 'Manual across the pad', parkId: 'roche-park', time: '3h ago', likes: 8 },
+];
+
+const MEDAL_DEFINITIONS = [
+  { id: 'park_visitor', name: 'Local Hero', icon: '🛹', description: 'Total check-ins across all parks', tiers: [5, 20, 50], color: '#84cc16' },
+  { id: 'shred_time', name: 'Stamina Rider', icon: '⚡', description: 'Total minutes spent skating', tiers: [15, 60, 240], color: '#f59e0b' },
+  { id: 'trick_master', name: 'Trick Pioneer', icon: '🏆', description: 'Total tricks posted to the feed', tiers: [3, 15, 40], color: '#0ea5e9' },
+  { id: 'town_legend', name: 'Town Legend', icon: '📍', description: 'Visit unique skateparks', tiers: [2, 4, 10], color: '#ec4899' },
+  { id: 'early_bird', name: 'First Light', icon: '🌅', description: 'Sessions before 9 AM', tiers: [1, 5, 20], color: '#ef4444' },
+];
+
+// --- WEATHER THEME HELPERS ---
+const getWeatherTheme = (code) => {
+  if (code === 0) return { name: 'Clear', color: '#fbbf24', text: 'text-amber-400', bg: 'bg-amber-500/20', border: 'border-amber-500' };
+  if (code >= 1 && code <= 3) return { name: 'Partly Cloudy', color: '#38bdf8', text: 'text-sky-400', bg: 'bg-sky-500/20', border: 'border-sky-500' };
+  if (code >= 45 && code <= 48) return { name: 'Foggy', color: '#94a3b8', text: 'text-slate-400', bg: 'bg-slate-500/20', border: 'border-slate-500' };
+  if (code >= 51 && code <= 67) return { name: 'Rainy', color: '#3b82f6', text: 'text-blue-500', bg: 'bg-blue-500/20', border: 'border-blue-500' };
+  if (code >= 71 && code <= 77) return { name: 'Snow', color: '#e2e8f0', text: 'text-white', bg: 'bg-white/20', border: 'border-white' };
+  if (code >= 80 && code <= 82) return { name: 'Showers', color: '#818cf8', text: 'text-indigo-400', bg: 'bg-indigo-500/20', border: 'border-indigo-500' };
+  if (code >= 95) return { name: 'Stormy', color: '#d946ef', text: 'text-fuchsia-500', bg: 'bg-fuchsia-500/20', border: 'border-fuchsia-500' };
+  return { name: 'Mild', color: '#84cc16', text: 'text-lime-500', bg: 'bg-lime-500/20', border: 'border-lime-500' }; 
+};
+
+export default function App() {
+  const [view, setView] = useState('map'); 
+  const [selectedPark, setSelectedPark] = useState(null);
+  const [activeMedal, setActiveMedal] = useState(null); 
+  const [weather, setWeather] = useState({ temp: '--', code: 0, desc: 'Fetching...' });
+  const [imgError, setImgError] = useState(false);
+  
+  const [userProfile, setUserProfile] = useState({
+    name: 'RiderOne',
+    points: 1250,
+    stats: {
+      park_visitor: 12,
+      shred_time: 42,
+      trick_master: 2,
+      town_legend: 2,
+      early_bird: 0
+    }
+  });
+  
+  const [isCheckingIn, setIsCheckingIn] = useState(false);
+  const [sessionTime, setSessionTime] = useState(0);
+  const mapContainerRef = useRef(null);
+  const mapInstance = useRef(null);
+  const [leafletReady, setLeafletReady] = useState(false);
+
+  const theme = useMemo(() => getWeatherTheme(weather.code), [weather.code]);
+
+  useEffect(() => {
+    const fetchWeather = async () => {
+      try {
+        const response = await fetch('https://api.open-meteo.com/v1/forecast?latitude=50.466&longitude=-4.718&current_weather=true');
+        const data = await response.json();
+        const current = data.current_weather;
+        setWeather({
+          temp: Math.round(current.temperature),
+          code: current.weathercode,
+          desc: getWeatherTheme(current.weathercode).name
+        });
+      } catch (err) {
+        setWeather({ temp: 12, code: 1, desc: 'Partly Cloudy' }); 
+      }
+    };
+    fetchWeather();
+    const interval = setInterval(fetchWeather, 600000); 
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (document.getElementById('leaflet-css')) {
+      if (window.L) setLeafletReady(true);
+      return;
+    }
+    const link = document.createElement('link');
+    link.id = 'leaflet-css';
+    link.rel = 'stylesheet';
+    link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    document.head.appendChild(link);
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    script.async = true;
+    script.onload = () => setLeafletReady(true);
+    document.head.appendChild(script);
+  }, []);
+
+  useEffect(() => {
+    if (view === 'map' && leafletReady && mapContainerRef.current) {
+      const initMap = () => {
+        if (!window.L || !window.L.map) return;
+        if (mapInstance.current) mapInstance.current.remove();
+        try {
+          mapInstance.current = window.L.map(mapContainerRef.current, { zoomControl: false }).setView([50.47, -4.72], 11);
+          window.L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; OpenStreetMap' }).addTo(mapInstance.current);
+          SKATEPARKS.forEach(park => {
+            const marker = window.L.marker([park.lat, park.lng], {
+              icon: window.L.divIcon({
+                className: 'custom-div-icon',
+                html: `<div class="w-8 h-8 rounded-full border-4 border-black flex items-center justify-center shadow-lg transform hover:scale-110 transition-transform" style="background-color: ${theme.color}"><div class="w-2 h-2 bg-black rounded-full animate-pulse"></div></div>`,
+                iconSize: [32, 32],
+                iconAnchor: [16, 16]
+              })
+            }).addTo(mapInstance.current);
+            marker.on('click', () => { 
+              setImgError(false);
+              setSelectedPark(park); 
+              setView('park'); 
+            });
+          });
+          window.L.control.zoom({ position: 'bottomright' }).addTo(mapInstance.current);
+        } catch (e) { console.error("Map Init Error:", e); }
+      };
+      initMap();
+    }
+    return () => { if (mapInstance.current) { mapInstance.current.remove(); mapInstance.current = null; } };
+  }, [view, leafletReady, theme.color]);
+
+  useEffect(() => {
+    let interval;
+    if (isCheckingIn) {
+      interval = setInterval(() => {
+        setSessionTime((prev) => {
+          const newTime = prev + 1;
+          if (newTime % 60 === 0) {
+            setUserProfile(u => ({ ...u, stats: { ...u.stats, shred_time: u.stats.shred_time + 1 } }));
+          }
+          return newTime;
+        });
+      }, 1000);
+    } else {
+      setSessionTime(0);
+    }
+    return () => clearInterval(interval);
+  }, [isCheckingIn]);
+
+  const getMedalTier = (statKey, value) => {
+    const medal = MEDAL_DEFINITIONS.find(m => m.id === statKey);
+    if (!medal) return 0;
+    if (value >= medal.tiers[2]) return 3; 
+    if (value >= medal.tiers[1]) return 2; 
+    if (value >= medal.tiers[0]) return 1; 
+    return 0; 
+  };
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const MedalIcon = ({ medal, value, size = "md", onClick }) => {
+    const tier = getMedalTier(medal.id, value);
+    const tierColors = ['#262626', '#cd7f32', '#c0c0c0', '#ffd700']; 
+    const ringColor = tier === 0 ? '#404040' : tierColors[tier];
+    const sizes = {
+      sm: { outer: "w-16 h-16", font: "text-2xl", border: "border-4" },
+      md: { outer: "w-24 h-24", font: "text-4xl", border: "border-[6px]" },
+      lg: { outer: "w-40 h-40", font: "text-6xl", border: "border-[8px]" }
+    };
+
+    return (
+      <div className="flex flex-col items-center gap-2 group cursor-pointer" onClick={onClick}>
+        <div className={`relative ${sizes[size].outer} rounded-full flex items-center justify-center transition-transform group-hover:scale-105`} style={{ backgroundColor: '#171717', border: `${sizes[size].border} solid ${ringColor}` }}>
+          <span className={`${sizes[size].font} ${tier === 0 ? 'grayscale opacity-30' : ''}`}>{medal.icon}</span>
+        </div>
+        {size !== 'lg' && <span className="text-[10px] font-bold uppercase tracking-widest text-neutral-500">{medal.name}</span>}
+      </div>
+    );
+  };
+
+  return (
+    <div className="min-h-screen bg-black text-white font-sans selection:bg-neutral-200 selection:text-black overflow-x-hidden">
+      <style>{`
+        .leaflet-container { background: #000 !important; }
+        .custom-div-icon { background: transparent !important; border: none !important; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+      `}</style>
+
+      {/* HEADER */}
+      <header className="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-neutral-900 px-4 h-16 flex items-center justify-between">
+        <div className="flex items-center gap-2 cursor-pointer group" onClick={() => setView('map')}>
+          <div className="text-2xl transition-transform group-hover:-rotate-12 duration-300">🛹</div>
+          <h1 className="text-xl font-bold tracking-tighter uppercase italic text-white">Skatelife</h1>
+        </div>
+        <div className="flex items-center gap-4">
+          <div className="hidden sm:flex flex-col items-end leading-tight mr-1">
+             <span className="text-[10px] text-neutral-500 font-black uppercase tracking-widest">{weather.desc}</span>
+             <span className={`text-sm font-black leading-none ${theme.text}`}>{weather.temp}°C</span>
+          </div>
+          <button onClick={() => setView('profile')} className="w-10 h-10 rounded-full bg-neutral-900 border border-neutral-800 flex items-center justify-center hover:bg-neutral-700 transition-colors">
+            <IconUser />
+          </button>
+        </div>
+      </header>
+
+      {/* MAIN CONTENT */}
+      <main className={`pt-16 pb-20 h-full ${view === 'map' ? 'w-full px-0' : 'max-w-2xl mx-auto px-4'}`}>
+        {view === 'map' && (
+          <div className="h-[calc(100vh-9rem)] relative w-full overflow-hidden">
+            <div ref={mapContainerRef} className="w-full h-full z-0" />
+            <div className="absolute top-4 left-4 z-[1000] pointer-events-none">
+              <h2 className="text-3xl font-black italic uppercase drop-shadow-lg">Nearby Parks</h2>
+              <p className={`text-xs font-bold uppercase tracking-widest drop-shadow-md ${theme.text}`}>Current: {weather.desc} {weather.temp}°C</p>
+            </div>
+            <div className="absolute bottom-4 left-4 right-4 flex gap-2 overflow-x-auto pb-4 no-scrollbar z-[1000]">
+              {SKATEPARKS.map(park => (
+                <button 
+                  key={park.id} 
+                  onClick={() => { setImgError(false); setSelectedPark(park); setView('park'); }} 
+                  className={`flex-shrink-0 bg-neutral-900/90 border border-neutral-800 p-4 rounded-[1.5rem] flex items-center gap-3 backdrop-blur shadow-2xl transition-all active:scale-95`}
+                  style={{ borderColor: selectedPark?.id === park.id ? theme.color : '#262626' }}
+                >
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${theme.bg}`} style={{ color: theme.color }}><IconMapPin /></div>
+                  <div className="text-left">
+                    <div className="text-sm font-black text-white">{park.name}</div>
+                    <div className="text-[10px] text-neutral-400 font-bold uppercase">{park.distance}</div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {view === 'park' && selectedPark && (
+          <div className="py-6 flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <button className="flex items-center gap-2 font-bold" style={{ color: theme.color }} onClick={() => setView('map')}><IconChevronLeft /> Back</button>
+            
+            {/* PARK VISUAL HEADER WITH FALLBACK */}
+            <div className="relative w-full aspect-video rounded-3xl overflow-hidden bg-neutral-900 border border-neutral-800 group shadow-xl">
+               {!imgError ? (
+                 <img 
+                   src={selectedPark.imageUrl} 
+                   alt={selectedPark.name} 
+                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                   onError={() => setImgError(true)}
+                 />
+               ) : (
+                 <div className={`w-full h-full flex flex-col items-center justify-center p-8 text-center ${theme.bg}`}>
+                   <div className="text-4xl mb-2 opacity-50">🛹</div>
+                   <div className={`text-xs font-black uppercase tracking-widest ${theme.text}`}>Photo Loading Failed</div>
+                   <div className="text-[10px] text-neutral-500 mt-1 uppercase">Top-down layout unavailable</div>
+                 </div>
+               )}
+               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+               <div className="absolute bottom-4 left-6 right-6 flex items-end justify-between">
+                  <div>
+                    <h2 className="text-3xl font-black italic uppercase leading-none text-white drop-shadow-md">{selectedPark.name}</h2>
+                    <div className="flex items-center gap-2 mt-2 text-[10px] font-bold uppercase tracking-widest text-neutral-300">
+                       <IconCamera />
+                       {imgError ? "Dynamic Placeholder" : "Site Photo"}
+                    </div>
+                  </div>
+                  <div className={`px-4 py-2 rounded-full backdrop-blur-md border text-xs font-black uppercase ${theme.bg} ${theme.border}`} style={{ color: theme.color }}>
+                     {selectedPark.distance}
+                  </div>
+               </div>
+            </div>
+
+            <div className="bg-neutral-900 rounded-3xl p-6 border border-neutral-800">
+               <div className="flex flex-wrap gap-2 mb-4">
+                  {selectedPark.features.map(f => (
+                    <span key={f} className="text-[10px] font-black uppercase bg-neutral-800 border border-neutral-700 px-3 py-1.5 rounded-full text-neutral-400">{f}</span>
+                  ))}
+               </div>
+               <p className="text-neutral-400 text-sm leading-relaxed mb-8">{selectedPark.description}</p>
+               
+               <div className={`p-6 rounded-2xl border-2 transition-all ${isCheckingIn ? 'bg-neutral-800 shadow-[0_0_20px_rgba(255,255,255,0.05)]' : 'bg-black border-neutral-800'}`} style={{ borderColor: isCheckingIn ? theme.color : '#262626' }}>
+                  <div className="flex justify-between items-center mb-4">
+                    <div style={{ color: theme.color }}><IconTimer /></div>
+                    {isCheckingIn && <span className="text-[10px] font-black uppercase bg-black/20 px-2 py-1 rounded-full">Session Active</span>}
+                  </div>
+                  <h3 className="text-xl font-bold mb-4">{isCheckingIn ? "Shredding Now" : "Ready to Start?"}</h3>
+                  {isCheckingIn ? (
+                    <div className="space-y-4">
+                      <div className="text-4xl font-mono font-black text-center" style={{ color: theme.color }}>{formatTime(sessionTime)}</div>
+                      <button onClick={() => setIsCheckingIn(false)} className="w-full bg-white text-black font-black py-4 rounded-xl uppercase italic hover:bg-neutral-200 active:scale-95 transition-all">Finish Session</button>
+                    </div>
+                  ) : (
+                    <button 
+                      onClick={() => { setIsCheckingIn(true); setUserProfile(u => ({...u, stats: {...u.stats, park_visitor: u.stats.park_visitor + 1}})); }} 
+                      className="w-full text-black font-black py-4 rounded-xl uppercase italic shadow-lg active:scale-95 transition-all"
+                      style={{ backgroundColor: theme.color }}
+                    >
+                      Check In
+                    </button>
+                  )}
+               </div>
+            </div>
+            
+            <div className="flex flex-col gap-4">
+                <h3 className="text-xl font-black uppercase italic flex items-center gap-2"><IconTrendingUp /> Local Feed</h3>
+                {MOCK_TRICKS.filter(t => t.parkId === selectedPark.id || t.parkId === 'bodmin-priory').map(post => (
+                  <div key={post.id} className="bg-neutral-900 border border-neutral-800 p-4 rounded-2xl">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-8 h-8 rounded-full bg-neutral-800 border border-neutral-700 flex items-center justify-center text-[10px] font-bold" style={{ color: theme.color }}>{post.user.substring(0,2)}</div>
+                      <div className="text-sm font-bold">{post.user}</div>
+                    </div>
+                    <p className="font-medium mb-3 text-neutral-200">"{post.trick}"</p>
+                    <div className="flex gap-4 text-neutral-500"><IconHeart /><IconMessage /></div>
+                  </div>
+                ))}
+            </div>
+          </div>
+        )}
+
+        {view === 'profile' && (
+          <div className="py-6 animate-in slide-in-from-right-4 duration-500">
+             <div className="bg-neutral-900 rounded-[2.5rem] p-10 flex flex-col items-center text-center border border-neutral-800 mb-6">
+                <div className="w-32 h-32 rounded-full bg-neutral-950 border-4 flex items-center justify-center mb-4 shadow-xl" style={{ borderColor: theme.color }}>
+                   <IconUser size={64} />
+                </div>
+                <h2 className="text-4xl font-black italic uppercase tracking-tighter">{userProfile.name}</h2>
+                <p className="text-neutral-500 font-black text-xs uppercase tracking-widest mb-8">Bodmin Regular</p>
+                <div className="grid grid-cols-2 gap-8 w-full border-t border-neutral-800 pt-8">
+                   <div className="text-left">
+                      <span className="text-[10px] text-neutral-500 font-black uppercase tracking-widest leading-none block mb-1">Experience</span>
+                      <div className="text-2xl font-black text-white">{userProfile.points} <span className="text-sm italic" style={{ color: theme.color }}>XP</span></div>
+                   </div>
+                   <div className="text-left">
+                      <span className="text-[10px] text-neutral-500 font-black uppercase tracking-widest leading-none block mb-1">Sessions</span>
+                      <div className="text-2xl font-black text-white">{userProfile.stats.park_visitor}</div>
+                   </div>
+                </div>
+             </div>
+             <div className="bg-neutral-900 rounded-[2rem] p-6 border border-neutral-800">
+                <div className="flex justify-between items-center mb-6">
+                   <h3 className="text-xl font-black uppercase italic flex items-center gap-2"><IconAward /> Top Medals</h3>
+                   <button onClick={() => setView('medals')} className="text-xs font-black uppercase tracking-widest px-3 py-1.5 rounded-full" style={{ color: theme.color, backgroundColor: `${theme.color}20` }}>View All</button>
+                </div>
+                <div className="flex justify-around">
+                   {MEDAL_DEFINITIONS.slice(0, 3).map(medal => (
+                     <MedalIcon key={medal.id} medal={medal} value={userProfile.stats[medal.id]} size="md" onClick={() => { setActiveMedal(medal); setView('medals'); }} />
+                   ))}
+                </div>
+             </div>
+          </div>
+        )}
+
+        {view === 'medals' && (
+          <div className="py-6 animate-in slide-in-from-bottom-4 duration-500">
+             <button className="flex items-center gap-2 font-bold mb-6" style={{ color: theme.color }} onClick={() => setView('profile')}><IconChevronLeft /> Back to Profile</button>
+             <h2 className="text-3xl font-black italic uppercase mb-8">Achievements</h2>
+             <div className="grid grid-cols-3 gap-y-10">
+                {MEDAL_DEFINITIONS.map(medal => (
+                   <MedalIcon key={medal.id} medal={medal} value={userProfile.stats[medal.id]} onClick={() => setActiveMedal(medal)} />
+                ))}
+             </div>
+          </div>
+        )}
+      </main>
+
+      {/* MEDAL DETAIL MODAL */}
+      {activeMedal && (
+        <div className="fixed inset-0 z-[200] flex items-end justify-center bg-black/90 p-4 backdrop-blur-sm animate-in fade-in duration-300">
+           <div className="bg-neutral-900 w-full max-w-md rounded-[3rem] p-10 border border-neutral-800 flex flex-col items-center text-center animate-in slide-in-from-bottom-10 duration-500 relative">
+              <button className="absolute top-6 right-8 text-neutral-500 hover:text-white" onClick={() => setActiveMedal(null)}>✕</button>
+              <MedalIcon medal={activeMedal} value={userProfile.stats[activeMedal.id]} size="lg" />
+              <h2 className="text-3xl font-black italic uppercase mt-6 mb-2">{activeMedal.name}</h2>
+              <p className="text-neutral-400 text-sm mb-8 leading-relaxed max-w-[240px]">{activeMedal.description}</p>
+              <div className="w-full space-y-8">
+                 <div className="relative pt-1">
+                    <div className="flex mb-2 items-center justify-between">
+                       <div className="text-xs font-black uppercase text-neutral-500">Progress: {userProfile.stats[activeMedal.id]}</div>
+                       <div className="text-xs font-black uppercase" style={{ color: theme.color }}>Next: {
+                          getMedalTier(activeMedal.id, userProfile.stats[activeMedal.id]) < 3 
+                          ? activeMedal.tiers[getMedalTier(activeMedal.id, userProfile.stats[activeMedal.id])]
+                          : 'MAXED'
+                       }</div>
+                    </div>
+                    <div className="overflow-hidden h-3 text-xs flex rounded-full bg-neutral-800">
+                       <div style={{ width: `${Math.min(100, (userProfile.stats[activeMedal.id] / activeMedal.tiers[2]) * 100)}%`, backgroundColor: theme.color }} className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center"></div>
+                    </div>
+                 </div>
+                 <div className="flex justify-between w-full px-4">
+                    {activeMedal.tiers.map((t, i) => (
+                       <div key={i} className={`flex flex-col items-center gap-1 ${userProfile.stats[activeMedal.id] >= t ? 'text-white' : 'text-neutral-700'}`}>
+                          <div className={`w-3 h-3 rounded-full ${userProfile.stats[activeMedal.id] >= t ? '' : 'bg-neutral-800'}`} style={{ backgroundColor: userProfile.stats[activeMedal.id] >= t ? theme.color : '' }} />
+                          <span className="text-[10px] font-black">{t}</span>
+                       </div>
+                    ))}
+                 </div>
+              </div>
+              <button className="mt-10 w-full bg-neutral-800 py-4 rounded-2xl font-black uppercase text-xs tracking-widest text-neutral-300" onClick={() => setActiveMedal(null)}>Close</button>
+           </div>
+        </div>
+      )}
+
+      {/* MOBILE NAV BAR */}
+      <nav className="fixed bottom-0 w-full bg-black border-t border-neutral-900 h-16 flex items-center justify-around z-50">
+        <button onClick={() => setView('map')} className={`flex flex-col items-center gap-1 ${view === 'map' ? '' : 'text-neutral-600'}`} style={{ color: view === 'map' ? theme.color : '' }}>
+          <IconMapPin /> <span className="text-[10px] font-black uppercase tracking-tighter">Parks</span>
+        </button>
+        <button onClick={() => setView('profile')} className={`flex flex-col items-center gap-1 ${view === 'profile' || view === 'medals' ? '' : 'text-neutral-600'}`} style={{ color: (view === 'profile' || view === 'medals') ? theme.color : '' }}>
+          <IconUser /> <span className="text-[10px] font-black uppercase tracking-tighter">Rider</span>
+        </button>
+      </nav>
+
+      {/* Achievement/Session Toast */}
+      {isCheckingIn && sessionTime > 0 && sessionTime % 60 === 0 && (
+        <div 
+          className="fixed bottom-24 left-1/2 -translate-x-1/2 text-black px-6 py-3 rounded-full font-black italic uppercase shadow-2xl animate-bounce z-[100]"
+          style={{ backgroundColor: theme.color }}
+        >
+          +1 Min Shred Time!
+        </div>
+      )}
+    </div>
+  );
+}
