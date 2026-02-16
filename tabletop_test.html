@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Markerless Tabletop AR</title>
+    <!-- We use A-Frame 1.4.2 for better WebXR support -->
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <style>
+        body { margin: 0; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        #ui-overlay {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            text-align: center;
+            width: 100%;
+        }
+        .instruction-card {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            display: inline-block;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="ui-overlay">
+        <div class="instruction-card" id="msg">
+            Scan your table and tap to place the model!
+        </div>
+    </div>
+
+    <!-- 
+      - webxr: enables the hit-test feature for surface detection
+      - ar-hit-test: specific component to handle the "reticle" placement
+    -->
+    <a-scene 
+        webxr="optionalFeatures: hit-test;"
+        ar-hit-test="target: #model-container; type: footprint"
+        vr-mode-ui="enabled: false"
+        renderer="colorManagement: true;">
+        
+        <a-assets>
+            <!-- A nice 3D model for tabletop viewing -->
+            <a-asset-item id="dino" src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/examples/image-tracking/nft/trex/scene.gltf"></a-asset-item>
+        </a-assets>
+
+        <!-- 
+           This container stays hidden until the user taps. 
+           The 'ar-hit-test' will move this container to where the user taps.
+        -->
+        <a-entity id="model-container" visible="false">
+            <a-entity 
+                gltf-model="#dino" 
+                scale="0.05 0.05 0.05" 
+                position="0 0 0"
+                animation="property: rotation; to: 0 360 0; loop: true; dur: 15000; easing: linear">
+            </a-entity>
+        </a-entity>
+
+        <a-camera position="0 1.6 0"></a-camera>
+
+        <!-- 
+            The Reticle: 
+            This is the ring that appears on the table surface to show you where 
+            the model will be placed.
+        -->
+        <a-entity id="reticle" visible="false">
+            <a-ring color="#00ff00" radius-inner="0.04" radius-outer="0.05" rotation="-90 0 0"></a-ring>
+        </a-entity>
+
+    </a-scene>
+
+    <script>
+        const scene = document.querySelector('a-scene');
+        const model = document.getElementById('model-container');
+        const msg = document.getElementById('msg');
+
+        // This script handles the interaction logic
+        scene.addEventListener('enter-vr', () => {
+            if (scene.is('ar-mode')) {
+                msg.textContent = "Move your phone to find the table...";
+            }
+        });
+
+        // Listen for the hit-test result to show the ring
+        scene.addEventListener('ar-hit-test-start', () => {
+            msg.textContent = "Surface detected! Tap to place.";
+        });
+
+        // When the user taps the screen in AR
+        scene.addEventListener('click', (event) => {
+            if (scene.is('ar-mode')) {
+                model.setAttribute('visible', 'true');
+                msg.textContent = "Model placed!";
+                setTimeout(() => { msg.style.display = 'none'; }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>
