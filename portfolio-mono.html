@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Portfolio</title>
+<style>
+  /* ---------- COLOURS: only two! Swap them to invert the whole site ---------- */
+  :root { --ink: #d4d4d4; --line: #6e6e6e; --paper: #0c0c0c; --title-font: "Cascadia Code", "Fira Code", ui-monospace, Menlo, Consolas, monospace; --body-font: "Cascadia Code", "Fira Code", ui-monospace, Menlo, Consolas, monospace; }
+  :root[data-theme="light"] { --ink: #2b2b2b; --line: #8c8c8c; --paper: #f1f1f1; }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; overflow: hidden; }
+  body { font-family: var(--body-font); font-size: 14px; line-height: 1.55; color: var(--ink);
+         /* clean desktop. For pixel art later, use e.g.:
+            background: var(--paper) url("wallpaper.png") center / cover; image-rendering: pixelated; */
+         background: var(--paper); }
+  button { font-family: inherit; color: inherit; }
+
+  /* ---------- Menu bar ---------- */
+  #menubar { position: fixed; top: 0; left: 0; right: 0; height: 30px; background: var(--paper);
+             border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 6px;
+             padding: 0 10px; z-index: 9999; font-family: var(--title-font); font-weight: 400; font-size: 14px; }
+  #menubar .logo { margin-right: 8px; }
+  #menubar .task, #menubar #theme { background: var(--paper); border: 1px solid var(--line); font: inherit;
+             font-size: 12px; padding: 0 8px; height: 22px; cursor: pointer; max-width: 140px;
+             white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #menubar .task.active, #menubar .task:hover, #menubar #theme:hover { background: var(--ink); color: var(--paper); }
+  #menubar .right { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+
+  /* ---------- Desktop icons ---------- */
+  #icons { position: absolute; top: 46px; left: 14px; bottom: 14px; display: flex; flex-direction: column;
+           flex-wrap: wrap; gap: 14px 10px; align-content: flex-start; }
+  .icon { width: 96px; background: none; border: 0; padding: 0; cursor: pointer; text-align: center; }
+  .icon svg { display: block; margin: 0 auto 4px; width: 40px; height: auto; color: var(--ink);
+              background: var(--paper); padding: 4px; border: 1px solid var(--line); box-sizing: content-box; }
+  .icon span { display: inline-block; background: var(--paper); padding: 0 4px; font-size: 12px; }
+  .icon:hover svg, .icon:focus-visible svg { background: var(--ink); color: var(--paper); }
+  .icon:focus-visible { outline: none; }
+  .icon:hover span, .icon:focus-visible span { background: var(--ink); color: var(--paper); }
+
+  /* ---------- Windows ---------- */
+  .win { position: absolute; width: 480px; max-width: 96vw; background: var(--paper);
+         border: 1px solid var(--line); box-shadow: 3px 3px 0 var(--line); display: flex; flex-direction: column; }
+  .win .bar { height: 24px; display: flex; align-items: center; gap: 8px; padding: 0 6px;
+              border-bottom: 1px solid var(--line); cursor: grab; user-select: none; touch-action: none;
+              background: var(--paper); }
+  /* classic striped title bar on the focused window only */
+  .win.active .bar { background: repeating-linear-gradient(var(--line) 0 1px, var(--paper) 1px 3px); }
+  .win .bar.dragging { cursor: grabbing; }
+  .win .name { flex: 1; text-align: center; font-family: var(--title-font); font-weight: 400; font-size: 13px;
+               white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .win .name span { background: var(--paper); padding: 0 8px; }
+  .win .ctl { width: 15px; height: 15px; padding: 0; border: 1px solid var(--line); background: var(--paper); cursor: pointer; }
+  .win .ctl:hover { background: var(--ink); }
+  .win .body { padding: 14px 16px; overflow: auto; max-height: 58vh; }
+  .win .body.frame { padding: 0; overflow: hidden; height: 420px; max-height: none; }
+  .win .body.frame iframe { width: 100%; height: 100%; border: 0; display: block; background: var(--paper); }
+  .win:not(.active) .body.frame iframe { pointer-events: none; }  /* first click on a back window just focuses it */
+  .win.max .body.frame { height: auto; }
+  .win.shaded .body { display: none; }
+  .win.shaded { box-shadow: 3px 3px 0 var(--line); }
+  .win.shaded .bar { border-bottom: 0; }
+  .win h2 { margin: 0 0 4px; font-weight: 400; font-family: var(--title-font); font-size: 17px; }
+  .win p { margin: 0 0 10px; }
+  .meta { margin-bottom: 8px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 12px; }
+  .tag { border: 1px solid var(--line); padding: 0 8px; font-size: 12px; }
+  .win a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; }
+  .win a:hover { background: var(--ink); color: var(--paper); }
+  .win img { max-width: 100%; display: block; margin: 10px 0; border: 1px solid var(--line);
+             filter: grayscale(1) contrast(1.4); }   /* keeps screenshots black & white */
+  .win video, .win iframe { max-width: 100%; display: block; margin: 10px 0; border: 1px solid var(--line); }
+  .win ul { margin: 0 0 10px; padding-left: 20px; }
+  .win.max { top: 30px !important; left: 0 !important; width: 100vw !important; max-width: none;
+             height: calc(100% - 30px); box-shadow: none; }
+  .win.max .body { max-height: none; flex: 1; }
+
+  /* monochrome scrollbars */
+  .body::-webkit-scrollbar { width: 14px; }
+  .body::-webkit-scrollbar-track { background: var(--paper); border-left: 1px solid var(--line); }
+  .body::-webkit-scrollbar-thumb { background: var(--paper); border: 1px solid var(--line); }
+
+  @media (max-width: 600px) {
+    .win { width: 94vw; left: 3vw !important; }
+    #icons { flex-direction: row; right: 8px; }
+    #menubar .name-label { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="menubar">
+  <span class="logo">◆ <span class="name-label">my_portfolio</span></span>
+  <span id="tasks"></span>
+  <span class="right"><button id="theme" title="Invert colours">invert</button><span id="clock"></span></span>
+</div>
+<div id="icons"></div>
+
+<!-- Fragment content: plain HTML, styled automatically by the desktop. Add more templates the same way. -->
+<template id="gallery">
+  <h2>Gallery</h2>
+  <p>This content is a fragment, so it uses the desktop's font and colours with no extra styling, and the invert button changes it too.</p>
+  <ul>
+    <li>Links, lists and headings just work</li>
+    <li><a href="https://example.com" target="_blank">A link that opens in a new tab</a></li>
+  </ul>
+  <!-- Picture:  <img src="images/photo.jpg" alt="Describe the picture"> -->
+  <!-- Video:    <video src="videos/demo.mp4" controls></video> -->
+  <!-- YouTube:  <iframe src="https://www.youtube.com/embed/VIDEO_ID" height="260" allowfullscreen></iframe> -->
+</template>
+
+<script>
+/* =====================================================================
+   ADD A PROJECT: copy one block below, paste it at the end of the list
+   (before the closing ]), and edit it.
+   - icon: "folder", "doc", "user" or "terminal"  (or add your own, see ICONS)
+   - body: normal HTML (paragraphs, <img src="...">, <a href="...">)
+   - OR src: "pages/my-page.html" to load a separate HTML file inside the window
+     (instead of body). Optional: width and height in pixels.
+   - OR include: "#my-template" (a <template id="my-template"> lower down this file)
+     or include: "pages/fragment.html" (just the content, no <html> or <head>).
+   ===================================================================== */
+const PROJECTS = [
+  {
+    id: "about", title: "about_me", icon: "user", year: "", tags: [],
+    body: `<h2>Hi, I'm [Your Name]</h2>
+           <p>Write a short intro: what you studied, what you like building, what you're looking for.</p>
+           <p><a href="mailto:you@example.com">you@example.com</a> ·
+              <a href="https://github.com/yourname" target="_blank">GitHub</a></p>
+           <p>Tip: double-click a window's title bar to roll it up.</p>`
+  },
+  {
+    id: "project1", title: "final_year_project", icon: "folder", year: "2025",
+    tags: ["Python", "Machine Learning"],
+    body: `<p>Describe the project: the problem, what you built, what you learned.</p>
+           <!-- <img src="images/screenshot.png" alt="Screenshot of the project"> -->
+           <p><a href="#" target="_blank">View on GitHub</a></p>`
+  },
+  {
+    id: "project2", title: "robot_arm", icon: "terminal", year: "2024",
+    tags: ["C++", "Arduino"],
+    body: `<p>Another project goes here. Swap this text for your own.</p>`
+  },
+  {
+    id: "project3", title: "side_project", icon: "doc", year: "2026",
+    tags: ["JavaScript"],
+    body: `<p>Personal projects from after university can sit alongside the uni work.</p>`
+  },
+  {
+    id: "example_page", title: "example_page", icon: "doc",
+    src: "pages/example.html", width: 520, height: 440
+  },
+  {
+    id: "gallery", title: "gallery", icon: "folder", year: "2026", tags: ["Photos", "Video"],
+    include: "#gallery"            /* content lives in the <template id="gallery"> below */
+  },
+  {
+    id: "notes_file", title: "notes_file", icon: "doc",
+    include: "pages/fragment.html" /* content lives in its own file (needs a web server) */
+  }
+];
+
+/* Pixel icons: each "#" is a black pixel. Add your own by adding a new entry here,
+   then use its name as a project's icon. */
+const ICONS = {
+  folder: ["..#####.........", ".#.....#########", ".#.............#", ".#.............#", ".#.............#",
+           ".#.............#", ".#.............#", ".#.............#", ".###############"],
+  doc: ["########....", "#......##...", "#......#.#..", "#......####.", "#.........#.", "#.#######.#.",
+        "#.........#.", "#.#######.#.", "#.........#.", "#.#####...#.", "#.........#.", "###########."],
+  user: ["....######....", "...#......#...", "..#..#..#..#..", "..#..#..#..#..", "..#........#..",
+         "..#.#....#.#..", "...#.####.#...", "....######....", "......##......", "..##########..",
+         ".#....##....#.", ".#....##....#.", "##############"],
+  terminal: ["################", "#..............#", "#.#............#", "#..#...........#", "#.#............#",
+             "#......####....#", "#..............#", "################", "......####......", "....########...."]
+};
+function iconSVG(name) {
+  const rows = ICONS[name] || ICONS.folder;
+  let d = "";
+  rows.forEach((r, y) => [...r].forEach((c, x) => { if (c === "#") d += `M${x} ${y}h1v1h-1z`; }));
+  return `<svg viewBox="0 0 ${rows[0].length} ${rows.length}" shape-rendering="crispEdges" aria-hidden="true"><path fill="currentColor" d="${d}"/></svg>`;
+}
+
+/* =============== You shouldn't need to edit below this line =============== */
+const iconsEl = document.getElementById("icons");
+const tasksEl = document.getElementById("tasks");
+const open = {};
+let topZ = 10, offset = 0;
+
+PROJECTS.forEach(p => {
+  const b = document.createElement("button");
+  b.className = "icon";
+  b.innerHTML = iconSVG(p.icon) + `<span>${p.title}</span>`;
+  b.onclick = () => openWindow(p);
+  iconsEl.appendChild(b);
+});
+
+function openWindow(p) {
+  if (open[p.id]) { focus(p.id); return; }
+  const win = document.createElement("div");
+  win.className = "win";
+  if (p.width) win.style.width = p.width + "px";
+  win.style.left = (150 + offset * 30) + "px";
+  win.style.top = (56 + offset * 30) + "px";
+  offset = (offset + 1) % 8;
+  const framed = !!p.src;
+  const content = framed
+    ? `<iframe src="${p.src}" title="${p.title}" loading="lazy" allowfullscreen></iframe>`
+    : `${p.year ? `<div class="meta">${p.year}</div>` : ""}${(p.tags || []).length ? `<div class="tags">${(p.tags || []).map(t => `<span class="tag">${t}</span>`).join("")}</div>` : ""}${p.body || ""}${p.include ? '<div class="include"></div>' : ""}`;
+  win.innerHTML = `
+    <div class="bar">
+      <button class="ctl" data-a="close" aria-label="Close"></button>
+      <span class="name"><span>${p.title}</span></span>
+      <button class="ctl" data-a="max" aria-label="Maximise"></button>
+    </div>
+    <div class="body${framed ? " frame" : ""}"${framed && p.height ? ` style="height:${p.height}px"` : ""}>${content}</div>`;
+  document.body.appendChild(win);
+  if (p.include) loadFragment(p.include, win.querySelector(".include"));
+
+  const task = document.createElement("button");
+  task.className = "task";
+  task.textContent = p.title;
+  task.onclick = () => { win.classList.remove("shaded"); focus(p.id); };
+  tasksEl.appendChild(task);
+
+  open[p.id] = { win, task };
+  win.addEventListener("pointerdown", () => focus(p.id));
+  win.querySelector(".bar").addEventListener("dblclick", e => {
+    if (!e.target.closest(".ctl")) win.classList.toggle("shaded");
+  });
+  win.querySelectorAll(".ctl").forEach(c => c.onclick = e => {
+    e.stopPropagation();
+    if (c.dataset.a === "close") { win.remove(); task.remove(); delete open[p.id]; }
+    else { win.classList.toggle("max"); focus(p.id); }
+  });
+  makeDraggable(win, win.querySelector(".bar"));
+  focus(p.id);
+}
+
+/* include: "#some-id" copies a <template id="some-id"> from this page.
+   include: "pages/file.html" fetches a file (needs a web server, not file://). */
+function loadFragment(src, el) {
+  if (src.startsWith("#")) {
+    const t = document.querySelector(src);
+    el.innerHTML = t ? t.innerHTML : `<p>Couldn't find ${src} on this page.</p>`;
+    return;
+  }
+  el.innerHTML = "<p>loading...</p>";
+  fetch(src)
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
+    .then(html => { el.innerHTML = html; })
+    .catch(() => { el.innerHTML = `<p>Couldn't load ${src}. Fragment files need a web server, so they won't load when opened as a plain file or in a preview.</p>`; });
+}
+
+function focus(id) {
+  Object.entries(open).forEach(([k, o]) => {
+    o.win.classList.toggle("active", k === id);
+    o.task.classList.toggle("active", k === id);
+  });
+  open[id].win.style.zIndex = ++topZ;
+}
+
+function makeDraggable(win, handle) {
+  handle.addEventListener("pointerdown", e => {
+    if (e.target.closest(".ctl") || win.classList.contains("max")) return;
+    const dx = e.clientX - win.offsetLeft, dy = e.clientY - win.offsetTop;
+    handle.classList.add("dragging");
+    handle.setPointerCapture(e.pointerId);
+    const move = ev => {
+      win.style.left = Math.max(0, Math.min(ev.clientX - dx, innerWidth - 80)) + "px";
+      win.style.top = Math.max(30, Math.min(ev.clientY - dy, innerHeight - 40)) + "px";
+    };
+    const up = () => {
+      handle.classList.remove("dragging");
+      handle.removeEventListener("pointermove", move);
+      handle.removeEventListener("pointerup", up);
+    };
+    handle.addEventListener("pointermove", move);
+    handle.addEventListener("pointerup", up);
+  });
+}
+
+/* invert button: light <-> dark, remembered between visits */
+const root = document.documentElement;
+try { if (localStorage.getItem("theme") === "light") root.dataset.theme = "light"; } catch (e) {}
+document.getElementById("theme").onclick = () => {
+  const light = root.dataset.theme !== "light";
+  if (light) root.dataset.theme = "light"; else delete root.dataset.theme;
+  try { localStorage.setItem("theme", light ? "light" : "dark"); } catch (e) {}
+};
+
+function tick() {
+  document.getElementById("clock").textContent =
+    new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+}
+tick(); setInterval(tick, 20000);
+
+openWindow(PROJECTS[0]);
+</script>
+</body>
+</html>
